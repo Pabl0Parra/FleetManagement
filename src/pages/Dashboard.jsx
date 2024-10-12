@@ -67,7 +67,7 @@ function Dashboard() {
         <DashboardCard05 />
         {/* Line chart (Sales Over Time) */}
         <DashboardCard08 />
-        {/* Stacked bar chart (Sales VS Refunds) */}
+        {/* Stacked bar chart (Fuel Cell Card) */}
         <DashboardCard09 />
         {/* Card (Customers) */}
         <DashboardCard10 />
