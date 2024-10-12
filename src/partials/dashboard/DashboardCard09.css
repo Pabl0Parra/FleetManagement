@@ -1,0 +1,195 @@
+/* src/pages/Dashboard/DashboardCard09.css */
+
+:root {
+  --bg-color: #333;
+  --border-color: #fff;
+  --charge: 50%;
+}
+
+.battery-container {
+  position: relative;
+  width: 60px; /* Scaled down from 120px */
+  height: 110px; /* Scaled down from 220px */
+  margin: 0 auto; /* Center horizontally */
+}
+
+.battery {
+  width: 60px; /* Scaled down from 120px */
+  height: 110px; /* Scaled down from 220px */
+  border: 2.5px solid var(--border-color); /* Scaled down from 5px */
+  display: grid;
+  place-items: center;
+  border-radius: 10px; /* Scaled down from 20px */
+  position: relative;
+}
+
+.battery::after {
+  content: '';
+  position: absolute;
+  width: 25px; /* Scaled down from 50px */
+  height: 15px; /* Scaled down from 30px */
+  background-color: var(--bg-color);
+  top: -10px; /* Scaled down from -20px */
+  box-sizing: border-box;
+  border: 2.5px solid var(--border-color); /* Scaled down from 5px */
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 10px,
+    0 10px
+  ); /* Adjusted proportionally */
+  border-radius: 5px 5px 0 0; /* Scaled down from 10px 10px 0 0 */
+}
+
+.battery::before {
+  content: '';
+  width: 50px; /* Scaled down from 100px */
+  height: 65px; /* Scaled down from 130px */
+  position: absolute;
+  background-color: #fffd;
+  clip-path: polygon(64% 26%, 34% 51%, 48% 51%, 33% 74%, 68% 44%, 54% 44%);
+  top: 10px; /* Scaled down from 20% of 220px = 44px, now 20% of 110px = 22px */
+  z-index: 2;
+}
+
+.battery .shine {
+  position: absolute;
+  width: 10px; /* Scaled down from 20px */
+  height: 25px; /* Scaled down from 50px */
+  background-color: rgba(255, 255, 255, 0.4);
+  left: 10px; /* Scaled down from 20px */
+  bottom: 10px; /* Scaled down from 20px */
+  border-radius: 5px; /* Scaled down from 10px */
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.6); /* Scaled down from 8px */
+  z-index: 1;
+}
+
+.battery .shine:nth-child(1) {
+  top: 10px; /* Scaled down from 20px */
+  left: auto;
+  right: 10px; /* Scaled down from 20px */
+  width: 5px; /* Scaled down from 10px */
+  height: 12.5px; /* Scaled down from 25px */
+}
+
+.battery .container {
+  --color1: #cddc39;
+  --color2: #4caf50;
+  position: relative;
+  width: 50px; /* Scaled down from 100px */
+  height: 100px; /* Scaled down from 200px */
+  border-radius: 5px; /* Scaled down from 10px */
+  overflow: hidden;
+}
+
+.battery .container .energy {
+  width: 100%;
+  height: 200%;
+  position: absolute;
+  background-image: linear-gradient(
+    transparent 32%,
+    var(--color1) 32% 45%,
+    var(--color2) 100%
+  );
+  transform: translateY(25%);
+  animation: charge 6s 3s ease-in-out forwards;
+}
+
+.battery .container .energy .wave {
+  width: 108px; /* Scaled down from 216px */
+  height: 10px; /* Scaled down from 20px */
+  position: absolute;
+  top: 15px; /* Scaled down from 30% of 200px = 60px, now 30% of 100px = 30px */
+  transform: scale(2, 1);
+  background-image: radial-gradient(
+      24px 12.5px at 50% 24%,
+      var(--color1) 51%,
+      transparent 53%
+    ),
+    radial-gradient(33px 15px at 50% -8px, transparent 44%, var(--color1) 46%);
+  background-position: 0px 0px, 13px 0px; /* Adjusted proportionally */
+  background-size: 27px 27px, 27px 27px; /* Scaled down from 54px 54px */
+  animation: move 1.6s linear infinite;
+}
+
+.battery .container .energy .wave:nth-child(1) {
+  --color1: var(--color2);
+  left: -12.5px; /* Scaled down from -25px */
+  top: 14.5px; /* Scaled down from 29% of 200px = 58px, now 29% of 100px = 29px */
+  animation: move 1.6s linear infinite reverse;
+}
+
+@keyframes move {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-6.25%, 2px); /* Scaled down from -12.5% and 4px */
+  }
+  100% {
+    transform: translate(-12.5%, 0); /* Scaled down from -25% and 0 */
+  }
+}
+
+@keyframes charge {
+  from {
+    transform: translateY(25%);
+  }
+  to {
+    transform: translateY(-28%);
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 640px) {
+  .battery-container {
+    width: 30px; /* Scaled down from 60px */
+    height: 55px; /* Scaled down from 110px */
+  }
+
+  .battery {
+    width: 30px; /* Scaled down from 60px */
+    height: 55px; /* Scaled down from 110px */
+  }
+
+  .battery::after {
+    width: 12.5px; /* Scaled down from 25px */
+    height: 7.5px; /* Scaled down from 15px */
+    top: -5px; /* Scaled down from -10px */
+  }
+
+  .battery::before {
+    width: 25px; /* Scaled down from 50px */
+    height: 32.5px; /* Scaled down from 65px */
+    top: 5px; /* Scaled down from 10px */
+  }
+
+  .battery .shine {
+    width: 5px; /* Scaled down from 10px */
+    height: 12.5px; /* Scaled down from 25px */
+    left: 5px; /* Scaled down from 10px */
+    bottom: 5px; /* Scaled down from 10px */
+  }
+
+  .battery .shine:nth-child(1) {
+    top: 5px; /* Scaled down from 10px */
+    right: 5px; /* Scaled down from 10px */
+    width: 2.5px; /* Scaled down from 5px */
+    height: 6.25px; /* Scaled down from 12.5px */
+  }
+
+  .battery .container {
+    width: 25px; /* Scaled down from 50px */
+    height: 50px; /* Scaled down from 100px */
+  }
+
+  .battery .container .energy .wave {
+    width: 54px; /* Scaled down from 108px */
+    height: 5px; /* Scaled down from 10px */
+  }
+
+  .battery .container .energy .wave:nth-child(1) {
+    left: -6.25px; /* Scaled down from -12.5px */
+    top: 7.25px; /* Scaled down from 14.5px */
+  }
+}
