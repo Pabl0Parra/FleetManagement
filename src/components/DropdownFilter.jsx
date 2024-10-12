@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
-import Transition from "../utils/Transition";
+import React, { useState, useRef, useEffect } from 'react';
+import Transition from '../utils/Transition';
 
 function DropdownFilter({ align }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -7,15 +7,13 @@ function DropdownFilter({ align }) {
   const trigger = useRef(null);
   const dropdown = useRef(null);
 
-  //Clear  filtres on click clear button 
-
   const Checkrefs = {
-    DirectorIndirect: useRef(null),
-    RealTimeValue: useRef(null),
-    Topcahnnels: useRef(null),
-    SalesRefunds: useRef(null),
-    LastOrder: useRef(null),
-    TotalSpent: useRef(null),
+    BasicDetails: useRef(null),
+    ProjectDetails: useRef(null),
+    DataloggerDetails: useRef(null),
+    PostProcessDetails: useRef(null),
+    SensorsStatus: useRef(null),
+    BuoyLocation: useRef(null),
   };
 
   const handleFilters = () => {
@@ -38,8 +36,8 @@ function DropdownFilter({ align }) {
         return;
       setDropdownOpen(false);
     };
-    document.addEventListener("click", clickHandler);
-    return () => document.removeEventListener("click", clickHandler);
+    document.addEventListener('click', clickHandler);
+    return () => document.removeEventListener('click', clickHandler);
   });
 
   // close if the esc key is pressed
@@ -48,8 +46,8 @@ function DropdownFilter({ align }) {
       if (!dropdownOpen || keyCode !== 27) return;
       setDropdownOpen(false);
     };
-    document.addEventListener("keydown", keyHandler);
-    return () => document.removeEventListener("keydown", keyHandler);
+    document.addEventListener('keydown', keyHandler);
+    return () => document.removeEventListener('keydown', keyHandler);
   });
 
   return (
@@ -76,9 +74,9 @@ function DropdownFilter({ align }) {
         show={dropdownOpen}
         tag="div"
         className={`origin-top-right z-10 absolute top-full left-0 right-auto min-w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/60 pt-1.5 rounded-lg shadow-lg overflow-hidden mt-1 ${
-          align === "right"
-            ? "md:left-auto md:right-0"
-            : "md:left-0 md:right-auto"
+          align === 'right'
+            ? 'md:left-auto md:right-0'
+            : 'md:left-0 md:right-auto'
         }`}
         enter="transition ease-out duration-200 transform"
         enterStart="opacity-0 -translate-y-2"
@@ -95,67 +93,67 @@ function DropdownFilter({ align }) {
             <li className="py-1 px-3">
               <label className="flex items-center">
                 <input
-                  ref={Checkrefs.DirectorIndirect}
+                  ref={Checkrefs.BasicDetails}
+                  type="checkbox"
+                  className="form-checkbox"
+                />
+                <span className="text-sm font-medium ml-2">Basic Details</span>
+              </label>
+            </li>
+            <li className="py-1 px-3">
+              <label className="flex items-center">
+                <input
+                  ref={Checkrefs.ProjectDetails}
                   type="checkbox"
                   className="form-checkbox"
                 />
                 <span className="text-sm font-medium ml-2">
-                  Direct VS Indirect
+                  Project Details
                 </span>
               </label>
             </li>
             <li className="py-1 px-3">
               <label className="flex items-center">
                 <input
-                  ref={Checkrefs.RealTimeValue}
+                  ref={Checkrefs.DataloggerDetails}
                   type="checkbox"
                   className="form-checkbox"
                 />
                 <span className="text-sm font-medium ml-2">
-                  Real Time Value
+                  Datalogger Details
                 </span>
               </label>
             </li>
             <li className="py-1 px-3">
               <label className="flex items-center">
                 <input
-                  ref={Checkrefs.Topcahnnels}
-                  type="checkbox"
-                  className="form-checkbox"
-                />
-                <span className="text-sm font-medium ml-2">Top Channels</span>
-              </label>
-            </li>
-            <li className="py-1 px-3">
-              <label className="flex items-center">
-                <input
-                  ref={Checkrefs.SalesRefunds}
+                  ref={Checkrefs.PostProcessDetails}
                   type="checkbox"
                   className="form-checkbox"
                 />
                 <span className="text-sm font-medium ml-2">
-                  Sales VS Refunds
+                  Post Processing Details
                 </span>
               </label>
             </li>
             <li className="py-1 px-3">
               <label className="flex items-center">
                 <input
-                  ref={Checkrefs.LastOrder}
+                  ref={Checkrefs.SensorsStatus}
                   type="checkbox"
                   className="form-checkbox"
                 />
-                <span className="text-sm font-medium ml-2">Last Order</span>
+                <span className="text-sm font-medium ml-2">Sensors Status</span>
               </label>
             </li>
             <li className="py-1 px-3">
               <label className="flex items-center">
                 <input
-                  ref={Checkrefs.TotalSpent}
+                  ref={Checkrefs.BuoyLocation}
                   type="checkbox"
                   className="form-checkbox"
                 />
-                <span className="text-sm font-medium ml-2">Total Spent</span>
+                <span className="text-sm font-medium ml-2">Buoy Location</span>
               </label>
             </li>
           </ul>
