@@ -29,3 +29,12 @@ export const formatThousands = (value) =>
     maximumSignificantDigits: 3,
     notation: 'compact',
   }).format(value);
+
+export const generateRandomXYZ = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < 3; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+};
