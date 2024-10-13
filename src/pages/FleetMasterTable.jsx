@@ -1,315 +1,241 @@
-// src/pages/FleetMasterTable.jsx
+// src/components/FleetMasterTable.jsx
 
-import React, { useState } from 'react';
-import { useThemeProvider } from '../utils/ThemeContext';
-import { generateRandomXYZ } from '../utils/Utils';
+import React, { useMemo, useState } from 'react';
+import {
+  useReactTable,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  flexRender,
+} from '@tanstack/react-table';
+import { mockData } from '../utils/mockData';
 
-function FleetMasterTable() {
-  const { currentTheme } = useThemeProvider();
-  const darkMode = currentTheme === 'dark';
+// Define a default UI for global filtering
+const GlobalFilter = ({ globalFilter, setGlobalFilter }) => {
+  return (
+    <div className="flex items-center space-x-2">
+      <span className="text-gray-700 dark:text-gray-300">Search:</span>
+      <input
+        type="text"
+        value={globalFilter || ''}
+        onChange={(e) => setGlobalFilter(e.target.value)}
+        className="p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+        placeholder="Type to search..."
+      />
+    </div>
+  );
+};
 
-  // State to manage modal visibility and selected row data
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null);
+const FleetMasterTable = () => {
+  // State management for sorting, filtering, and pagination
+  const [sorting, setSorting] = useState([]);
+  const [globalFilter, setGlobalFilter] = useState('');
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
-  // Helper function to pad numbers with leading zeros
-  const padNumber = (num) => num.toString().padStart(2, '0');
+  const data = useMemo(() => mockData, []);
 
-  const mockData = Array.from({ length: 50 }, (_, i) => {
-    const machineNumber = padNumber(i + 1);
-    const monthNumber = padNumber((i % 12) + 1); // Ensuring months range from 01 to 12
+  const columns = useMemo(
+    () => [
+      {
+        header: 'Buoy Name',
+        accessorKey: 'buoyName',
+      },
+      {
+        header: 'Buoy ID',
+        accessorKey: 'buoyID',
+      },
+      {
+        header: 'Status',
+        accessorKey: 'buoyStatus',
+      },
+      {
+        header: 'Project Name',
+        accessorKey: 'projectName',
+      },
+      {
+        header: 'Project Manager',
+        accessorKey: 'projectManager',
+      },
+      {
+        header: 'Coordinates',
+        accessorKey: 'projectCoordinates',
+      },
+      {
+        header: 'Client Name',
+        accessorKey: 'clientName',
+      },
+      {
+        header: 'Client Logo',
+        accessorKey: 'clientLogo',
+        cell: ({ getValue }) => (
+          <img
+            src={getValue()}
+            alt="Client Logo"
+            className="w-12 h-12 rounded"
+          />
+        ),
+      },
+      {
+        header: 'Datalogger Version',
+        accessorKey: 'dataloggerVersion',
+      },
+      {
+        header: 'Deployment Date',
+        accessorKey: 'deploymentDate',
+      },
+      {
+        header: 'End Date',
+        accessorKey: 'endDate',
+      },
+    ],
+    [],
+  );
 
-    const randomXYZ = generateRandomXYZ();
-
-    return {
-      buoyName: `E${machineNumber}`,
-      buoyID: `${machineNumber}`,
-      buoyStatus: i % 2 === 0 ? 'Active' : 'Inactive',
-      projectName: `EOL - ${randomXYZ}`,
-      projectManager: `Manager ${i + 1}`,
-      projectCoordinates: `36.${machineNumber}N, -122.${machineNumber}W`,
-      clientName: `Client ${i + 1}`,
-      clientLogo: 'https://via.placeholder.com/50',
-      dataloggerVersion: `v${i + 1}.0`,
-      deploymentDate: `2023-${monthNumber}-01`,
-      endDate: `2024-${monthNumber}-01`,
-    };
+  const table = useReactTable({
+    data,
+    columns,
+    state: {
+      sorting,
+      globalFilter,
+      pagination,
+    },
+    onSortingChange: setSorting,
+    onGlobalFilterChange: setGlobalFilter,
+    onPaginationChange: setPagination,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    globalFilterFn: 'includesString', // You can customize the global filter function
   });
 
-  // Event handler for double-click on a row
-  const handleRowDoubleClick = (row) => {
-    setSelectedRow(row);
-    setIsModalOpen(true);
-  };
-
-  // Event handler to close the modal
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedRow(null);
-  };
-
   return (
-    <div
-      className={`flex flex-col p-4 sm:p-6 m-4 sm:m-6 bg-${
-        darkMode ? 'gray-900' : 'white'
-      } dark:bg-gray-800 shadow-md rounded-xl w-full`}
-    >
-      <header className="pb-4 border-b border-gray-100 dark:border-gray-700/60">
-        <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-gray-100">
+    <div className="flex flex-col m-4 sm:m-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
+        <span className="text-2xl font-bold text-gray-800 dark:text-white">
           Fleet Master Table
-        </h2>
-      </header>
+        </span>
+        <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+          <GlobalFilter
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+          />
+          <select
+            value={pagination.pageSize}
+            onChange={(e) =>
+              setPagination((prev) => ({
+                ...prev,
+                pageSize: Number(e.target.value),
+                pageIndex: 0, // Reset to first page when page size changes
+              }))
+            }
+            className="p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+          >
+            {[10, 20, 30, 40, 50].map((size) => (
+              <option key={size} value={size}>
+                Show {size}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
 
-      {/* Responsive Table Container */}
-      <div className="overflow-x-auto mt-4">
+      {/* Table Container with Horizontal Scrolling */}
+      <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-gray-700">
-            <tr>
-              {/* Always Visible Columns */}
-              <th
-                scope="col"
-                className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-              >
-                Buoy Name
-              </th>
-              <th
-                scope="col"
-                className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-              >
-                Buoy Status
-              </th>
-              <th
-                scope="col"
-                className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-              >
-                Project Name
-              </th>
-
-              {/* Hidden on Mobile, Visible on Small Screens and Above */}
-              <th
-                scope="col"
-                className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden sm:table-cell"
-              >
-                Buoy ID
-              </th>
-              <th
-                scope="col"
-                className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden sm:table-cell"
-              >
-                Project Manager
-              </th>
-              <th
-                scope="col"
-                className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden sm:table-cell"
-              >
-                Project Coordinates
-              </th>
-              <th
-                scope="col"
-                className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden sm:table-cell"
-              >
-                Client Logo
-              </th>
-              <th
-                scope="col"
-                className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden sm:table-cell"
-              >
-                Datalogger Version
-              </th>
-              <th
-                scope="col"
-                className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden sm:table-cell"
-              >
-                Deployment Date
-              </th>
-              <th
-                scope="col"
-                className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden sm:table-cell"
-              >
-                End of Project Date
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-            {mockData.map((row, idx) => (
-              <tr
-                key={idx}
-                onDoubleClick={() => handleRowDoubleClick(row)}
-                className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                {/* Always Visible Columns */}
-                <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                  {row.buoyName}
-                </td>
-                <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                  {row.buoyStatus}
-                </td>
-                <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                  {row.projectName}
-                </td>
-
-                {/* Hidden on Mobile, Visible on Small Screens and Above */}
-                <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 hidden sm:table-cell">
-                  {row.buoyID}
-                </td>
-                <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 hidden sm:table-cell">
-                  {row.projectManager}
-                </td>
-                <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 hidden sm:table-cell">
-                  {row.projectCoordinates}
-                </td>
-                <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 hidden sm:table-cell">
-                  <img
-                    src={row.clientLogo}
-                    alt="Client Logo"
-                    className="h-8 w-8 rounded-full"
-                  />
-                </td>
-                <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 hidden sm:table-cell">
-                  {row.dataloggerVersion}
-                </td>
-                <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 hidden sm:table-cell">
-                  {row.deploymentDate}
-                </td>
-                <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 hidden sm:table-cell">
-                  {row.endDate}
-                </td>
+          <thead className="bg-gray-100 dark:bg-gray-800">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th
+                    key={header.id}
+                    className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider cursor-pointer"
+                    onClick={header.column.getToggleSortingHandler()}
+                  >
+                    <div className="flex items-center">
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
+                      {{
+                        asc: ' 🔼',
+                        desc: ' 🔽',
+                      }[header.column.getIsSorted()] || ''}
+                    </div>
+                  </th>
+                ))}
               </tr>
             ))}
+          </thead>
+          <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            {table.getRowModel().rows.length > 0 ? (
+              table.getRowModel().rows.map((row) => (
+                <tr
+                  key={row.id}
+                  className="hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <td
+                      key={cell.id}
+                      className="px-4 py-2 text-sm text-gray-900 dark:text-gray-100"
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={columns.length}
+                  className="text-center p-4 text-gray-700 dark:text-gray-300"
+                >
+                  No data available
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
 
-      {/* Modal */}
-      {isModalOpen && selectedRow && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-          onClick={closeModal}
-        >
-          {/* Modal Content */}
-          <div
-            className={`bg-${
-              darkMode ? 'gray-800' : 'white'
-            } rounded-lg shadow-lg w-11/12 max-w-md mx-auto p-6 relative`}
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+      {/* Pagination Controls */}
+      <div className="flex flex-col sm:flex-row justify-between items-center mt-4">
+        <div className="flex space-x-2 mb-2 sm:mb-0">
+          <button
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+            className={`px-4 py-2 border rounded ${
+              table.getCanPreviousPage()
+                ? 'bg-blue-500 text-white hover:bg-blue-600'
+                : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+            } dark:bg-blue-700 dark:hover:bg-blue-800 dark:border-blue-700`}
           >
-            {/* Close Button */}
-            <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-              onClick={closeModal}
-              aria-label="Close Modal"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-
-            {/* Modal Header */}
-            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
-              {selectedRow.projectName} Details
-            </h3>
-
-            {/* Modal Body: Display all details in a stacked format */}
-            <div className="space-y-2">
-              <div>
-                <span className="font-medium text-gray-700 dark:text-gray-300">
-                  Buoy Name:
-                </span>{' '}
-                <span className="text-gray-600 dark:text-gray-400">
-                  {selectedRow.buoyName}
-                </span>
-              </div>
-              <div>
-                <span className="font-medium text-gray-700 dark:text-gray-300">
-                  Buoy ID:
-                </span>{' '}
-                <span className="text-gray-600 dark:text-gray-400">
-                  {selectedRow.buoyID}
-                </span>
-              </div>
-              <div>
-                <span className="font-medium text-gray-700 dark:text-gray-300">
-                  Buoy Status:
-                </span>{' '}
-                <span className="text-gray-600 dark:text-gray-400">
-                  {selectedRow.buoyStatus}
-                </span>
-              </div>
-              <div>
-                <span className="font-medium text-gray-700 dark:text-gray-300">
-                  Project Manager:
-                </span>{' '}
-                <span className="text-gray-600 dark:text-gray-400">
-                  {selectedRow.projectManager}
-                </span>
-              </div>
-              <div>
-                <span className="font-medium text-gray-700 dark:text-gray-300">
-                  Project Coordinates:
-                </span>{' '}
-                <span className="text-gray-600 dark:text-gray-400">
-                  {selectedRow.projectCoordinates}
-                </span>
-              </div>
-              <div>
-                <span className="font-medium text-gray-700 dark:text-gray-300">
-                  Client Name:
-                </span>{' '}
-                <span className="text-gray-600 dark:text-gray-400">
-                  {selectedRow.clientName}
-                </span>
-              </div>
-              <div className="flex items-center">
-                <span className="font-medium text-gray-700 dark:text-gray-300">
-                  Client Logo:
-                </span>{' '}
-                <img
-                  src={selectedRow.clientLogo}
-                  alt="Client Logo"
-                  className="h-8 w-8 rounded-full ml-2"
-                />
-              </div>
-              <div>
-                <span className="font-medium text-gray-700 dark:text-gray-300">
-                  Datalogger Version:
-                </span>{' '}
-                <span className="text-gray-600 dark:text-gray-400">
-                  {selectedRow.dataloggerVersion}
-                </span>
-              </div>
-              <div>
-                <span className="font-medium text-gray-700 dark:text-gray-300">
-                  Deployment Date:
-                </span>{' '}
-                <span className="text-gray-600 dark:text-gray-400">
-                  {selectedRow.deploymentDate}
-                </span>
-              </div>
-              <div>
-                <span className="font-medium text-gray-700 dark:text-gray-300">
-                  End of Project Date:
-                </span>{' '}
-                <span className="text-gray-600 dark:text-gray-400">
-                  {selectedRow.endDate}
-                </span>
-              </div>
-            </div>
-          </div>
+            Previous
+          </button>
+          <button
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+            className={`px-4 py-2 border rounded ${
+              table.getCanNextPage()
+                ? 'bg-blue-500 text-white hover:bg-blue-600'
+                : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+            } dark:bg-blue-700 dark:hover:bg-blue-800 dark:border-blue-700`}
+          >
+            Next
+          </button>
         </div>
-      )}
+        <span className="text-gray-700 dark:text-gray-300">
+          Page <strong>{pagination.pageIndex + 1}</strong> of{' '}
+          <strong>{table.getPageCount()}</strong>
+        </span>
+      </div>
     </div>
   );
-}
+};
 
 export default FleetMasterTable;
