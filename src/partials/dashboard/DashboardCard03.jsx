@@ -143,16 +143,14 @@ function DashboardCard03() {
             28c
           </div>
           <div className="text-sm font-medium text-green-700 px-1.5 bg-green-500/20 rounded-full">
-            days from release
+            Stable
           </div>
         </div>
       </div>
-      {/* Chart built with Chart.js 3 */}
       <div className="grow max-sm:max-h-[128px] xl:max-h-[128px]">
         <div className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mt-2 ml-4">
           Storage Capacity
         </div>
-        {/* Change the height attribute to adjust the chart height */}
         <LineChart data={chartData} width={389} height={128} />
       </div>
     </div>

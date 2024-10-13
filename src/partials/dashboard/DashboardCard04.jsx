@@ -9,7 +9,6 @@ function DashboardCard04() {
         </h2>
       </header>
       <div className="relative h-96">
-        {/* Map displaying buoy location */}
         <MapComponent />
       </div>
     </div>

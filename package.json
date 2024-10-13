@@ -1,5 +1,5 @@
 {
-  "name": "mosaic-react",
+  "name": "dashboard-data-mgmt",
   "version": "0.1.0",
   "type": "module",
   "scripts": {
@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.7",
     "chart.js": "^4.4.1",
     "chartjs-adapter-moment": "^1.0.1",

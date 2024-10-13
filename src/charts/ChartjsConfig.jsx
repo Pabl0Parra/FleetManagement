@@ -1,6 +1,4 @@
-// Import Chart.js
 import { Chart, Tooltip } from 'chart.js';
-// Import Tailwind config
 import { tailwindConfig, hexToRGB } from '../utils/Utils';
 
 Chart.register(Tooltip);
@@ -23,7 +21,12 @@ export const chartAreaGradient = (ctx, chartArea, colorStops) => {
   if (!ctx || !chartArea || !colorStops || colorStops.length === 0) {
     return 'transparent';
   }
-  const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+  const gradient = ctx.createLinearGradient(
+    0,
+    chartArea.bottom,
+    0,
+    chartArea.top,
+  );
   colorStops.forEach(({ stop, color }) => {
     gradient.addColorStop(stop, color);
   });
@@ -47,9 +50,9 @@ export const chartColors = {
     light: tailwindConfig().theme.colors.gray[800],
     dark: tailwindConfig().theme.colors.gray[100],
   },
-  tooltipBodyColor : {
+  tooltipBodyColor: {
     light: tailwindConfig().theme.colors.gray[500],
-    dark: tailwindConfig().theme.colors.gray[400]
+    dark: tailwindConfig().theme.colors.gray[400],
   },
   tooltipBgColor: {
     light: tailwindConfig().theme.colors.white,

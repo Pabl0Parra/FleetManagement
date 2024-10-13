@@ -9,10 +9,10 @@ import DashboardCard08 from '../partials/dashboard/DashboardCard08';
 import DashboardCard09 from '../partials/dashboard/DashboardCard09';
 import DashboardCard10 from '../partials/dashboard/DashboardCard10';
 import DashboardCard11 from '../partials/dashboard/DashboardCard11';
-import DashboardCard12 from '../partials/dashboard/DashboardCard12';
-import DashboardCard13 from '../partials/dashboard/DashboardCard13';
+import DashboardCardWeather from '../partials/dashboard/meteoCard';
 import Datepicker from '../components/Datepicker';
 import FilterButton from '../components/DropdownFilter';
+import DashboardCardLiveFeed from '../partials/dashboard/DashboardCardLiveFeed';
 
 function Dashboard() {
   const buoyId = 'E01';
@@ -69,14 +69,14 @@ function Dashboard() {
         <DashboardCard08 />
         {/* Stacked bar chart (Fuel Cell Card) */}
         <DashboardCard09 />
-        {/* Card (Customers) */}
+        {/* Card (DPRs) */}
         <DashboardCard10 />
-        {/* Card (Reasons for Refunds) */}
+        {/* Card (Reasons for Missing Data) */}
         <DashboardCard11 />
-        {/* Card (Recent Activity) */}
-        <DashboardCard12 />
-        {/* Card (Income/Expenses) */}
-        <DashboardCard13 />
+
+        <DashboardCardWeather />
+
+        <DashboardCardLiveFeed />
       </div>
     </div>
   );

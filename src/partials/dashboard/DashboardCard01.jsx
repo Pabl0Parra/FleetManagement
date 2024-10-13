@@ -1,8 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import EditMenu from '../../components/DropdownEditMenu';
-import { tailwindConfig, hexToRGB } from '../../utils/Utils';
-
 function DashboardCard01({ backgroundImage }) {
   const cardTitle = 'Basic Details';
   const location = 'Korea';

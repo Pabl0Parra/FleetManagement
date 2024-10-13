@@ -3,26 +3,38 @@ import { useThemeProvider } from '../utils/ThemeContext';
 
 import { chartColors } from './ChartjsConfig';
 import {
-  Chart, BarController, BarElement, LinearScale, TimeScale, Tooltip, Legend,
+  Chart,
+  BarController,
+  BarElement,
+  LinearScale,
+  TimeScale,
+  Tooltip,
+  Legend,
 } from 'chart.js';
 import 'chartjs-adapter-moment';
-
-// Import utilities
 import { formatValue } from '../utils/Utils';
 
-Chart.register(BarController, BarElement, LinearScale, TimeScale, Tooltip, Legend);
+Chart.register(
+  BarController,
+  BarElement,
+  LinearScale,
+  TimeScale,
+  Tooltip,
+  Legend,
+);
 
-function BarChart02({
-  data,
-  width,
-  height
-}) {
-
-  const [chart, setChart] = useState(null)
+function BarChart02({ data, width, height }) {
+  const [chart, setChart] = useState(null);
   const canvas = useRef(null);
   const { currentTheme } = useThemeProvider();
   const darkMode = currentTheme === 'dark';
-  const { textColor, gridColor, tooltipBodyColor, tooltipBgColor, tooltipBorderColor } = chartColors; 
+  const {
+    textColor,
+    gridColor,
+    tooltipBodyColor,
+    tooltipBgColor,
+    tooltipBorderColor,
+  } = chartColors;
 
   useEffect(() => {
     const ctx = canvas.current;
@@ -87,9 +99,15 @@ function BarChart02({
               title: () => false, // Disable tooltip title
               label: (context) => formatValue(context.parsed.y),
             },
-            bodyColor: darkMode ? tooltipBodyColor.dark : tooltipBodyColor.light,
-            backgroundColor: darkMode ? tooltipBgColor.dark : tooltipBgColor.light,
-            borderColor: darkMode ? tooltipBorderColor.dark : tooltipBorderColor.light,
+            bodyColor: darkMode
+              ? tooltipBodyColor.dark
+              : tooltipBodyColor.light,
+            backgroundColor: darkMode
+              ? tooltipBgColor.dark
+              : tooltipBgColor.light,
+            borderColor: darkMode
+              ? tooltipBorderColor.dark
+              : tooltipBorderColor.light,
           },
         },
         interaction: {
@@ -129,9 +147,7 @@ function BarChart02({
     chart.update('none');
   }, [currentTheme]);
 
-  return (
-    <canvas ref={canvas} width={width} height={height}></canvas>
-  );
+  return <canvas ref={canvas} width={width} height={height}></canvas>;
 }
 
 export default BarChart02;

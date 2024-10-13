@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useThemeProvider } from '../utils/ThemeContext';
-
 import { chartColors } from './ChartjsConfig';
 import {
   Chart,
@@ -13,8 +12,6 @@ import {
   Tooltip,
 } from 'chart.js';
 import 'chartjs-adapter-moment';
-
-// Import utilities
 import { tailwindConfig, formatValue } from '../utils/Utils';
 
 Chart.register(

@@ -1,29 +1,30 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useThemeProvider } from '../utils/ThemeContext';
-
 import { chartColors } from './ChartjsConfig';
 import {
-  Chart, DoughnutController, ArcElement, TimeScale, Tooltip,
+  Chart,
+  DoughnutController,
+  ArcElement,
+  TimeScale,
+  Tooltip,
 } from 'chart.js';
 import 'chartjs-adapter-moment';
-
-// Import utilities
 import { tailwindConfig } from '../utils/Utils';
 
 Chart.register(DoughnutController, ArcElement, TimeScale, Tooltip);
 
-function DoughnutChart({
-  data,
-  width,
-  height
-}) {
-
-  const [chart, setChart] = useState(null)
+function DoughnutChart({ data, width, height }) {
+  const [chart, setChart] = useState(null);
   const canvas = useRef(null);
   const legend = useRef(null);
   const { currentTheme } = useThemeProvider();
   const darkMode = currentTheme === 'dark';
-  const { tooltipTitleColor, tooltipBodyColor, tooltipBgColor, tooltipBorderColor } = chartColors; 
+  const {
+    tooltipTitleColor,
+    tooltipBodyColor,
+    tooltipBgColor,
+    tooltipBorderColor,
+  } = chartColors;
 
   useEffect(() => {
     const ctx = canvas.current;
@@ -41,10 +42,18 @@ function DoughnutChart({
             display: false,
           },
           tooltip: {
-            titleColor: darkMode ? tooltipTitleColor.dark : tooltipTitleColor.light,
-            bodyColor: darkMode ? tooltipBodyColor.dark : tooltipBodyColor.light,
-            backgroundColor: darkMode ? tooltipBgColor.dark : tooltipBgColor.light,
-            borderColor: darkMode ? tooltipBorderColor.dark : tooltipBorderColor.light,
+            titleColor: darkMode
+              ? tooltipTitleColor.dark
+              : tooltipTitleColor.light,
+            bodyColor: darkMode
+              ? tooltipBodyColor.dark
+              : tooltipBodyColor.light,
+            backgroundColor: darkMode
+              ? tooltipBgColor.dark
+              : tooltipBgColor.light,
+            borderColor: darkMode
+              ? tooltipBorderColor.dark
+              : tooltipBorderColor.light,
           },
         },
         interaction: {
@@ -74,7 +83,16 @@ function DoughnutChart({
               li.style.margin = tailwindConfig().theme.margin[1];
               // Button element
               const button = document.createElement('button');
-              button.classList.add('btn-xs', 'bg-white', 'dark:bg-gray-700', 'text-gray-500', 'dark:text-gray-400', 'shadow-sm', 'shadow-black/[0.08]', 'rounded-full');
+              button.classList.add(
+                'btn-xs',
+                'bg-white',
+                'dark:bg-gray-700',
+                'text-gray-500',
+                'dark:text-gray-400',
+                'shadow-sm',
+                'shadow-black/[0.08]',
+                'rounded-full',
+              );
               button.style.opacity = item.hidden ? '.3' : '';
               button.onclick = () => {
                 c.toggleDataVisibility(item.index);

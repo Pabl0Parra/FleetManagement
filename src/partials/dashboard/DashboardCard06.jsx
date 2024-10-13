@@ -71,10 +71,9 @@ function DashboardCard06() {
             4.01
           </div>
           <div className="text-sm font-medium text-green-700 px-1.5 bg-green-500/20 rounded-full">
-            Stable version
+            Stable
           </div>
         </div>
-        {/* Change the height attribute to adjust the chart height */}
         <DoughnutChart data={chartData} width={389} height={260} />
       </div>
     </div>

@@ -3,27 +3,39 @@ import { useThemeProvider } from '../utils/ThemeContext';
 
 import { chartColors } from './ChartjsConfig';
 import {
-  Chart, BarController, BarElement, LinearScale, TimeScale, Tooltip, Legend,
+  Chart,
+  BarController,
+  BarElement,
+  LinearScale,
+  TimeScale,
+  Tooltip,
+  Legend,
 } from 'chart.js';
 import 'chartjs-adapter-moment';
-
-// Import utilities
 import { tailwindConfig, formatValue } from '../utils/Utils';
 
-Chart.register(BarController, BarElement, LinearScale, TimeScale, Tooltip, Legend);
+Chart.register(
+  BarController,
+  BarElement,
+  LinearScale,
+  TimeScale,
+  Tooltip,
+  Legend,
+);
 
-function BarChart01({
-  data,
-  width,
-  height
-}) {
-
-  const [chart, setChart] = useState(null)
+function BarChart01({ data, width, height }) {
+  const [chart, setChart] = useState(null);
   const canvas = useRef(null);
   const legend = useRef(null);
   const { currentTheme } = useThemeProvider();
   const darkMode = currentTheme === 'dark';
-  const { textColor, gridColor, tooltipBodyColor, tooltipBgColor, tooltipBorderColor } = chartColors;
+  const {
+    textColor,
+    gridColor,
+    tooltipBodyColor,
+    tooltipBgColor,
+    tooltipBorderColor,
+  } = chartColors;
 
   useEffect(() => {
     const ctx = canvas.current;
@@ -83,9 +95,15 @@ function BarChart01({
               title: () => false, // Disable tooltip title
               label: (context) => formatValue(context.parsed.y),
             },
-            bodyColor: darkMode ? tooltipBodyColor.dark : tooltipBodyColor.light,
-            backgroundColor: darkMode ? tooltipBgColor.dark : tooltipBgColor.light,
-            borderColor: darkMode ? tooltipBorderColor.dark : tooltipBorderColor.light,
+            bodyColor: darkMode
+              ? tooltipBodyColor.dark
+              : tooltipBodyColor.light,
+            backgroundColor: darkMode
+              ? tooltipBgColor.dark
+              : tooltipBgColor.light,
+            borderColor: darkMode
+              ? tooltipBorderColor.dark
+              : tooltipBorderColor.light,
           },
         },
         interaction: {
@@ -118,7 +136,10 @@ function BarChart01({
               button.style.alignItems = 'center';
               button.style.opacity = item.hidden ? '.3' : '';
               button.onclick = () => {
-                c.setDatasetVisibility(item.datasetIndex, !c.isDatasetVisible(item.datasetIndex));
+                c.setDatasetVisibility(
+                  item.datasetIndex,
+                  !c.isDatasetVisible(item.datasetIndex),
+                );
                 c.update();
               };
               // Color box
@@ -138,15 +159,20 @@ function BarChart01({
               const value = document.createElement('span');
               value.classList.add('text-gray-800', 'dark:text-gray-100');
               value.style.fontSize = tailwindConfig().theme.fontSize['3xl'][0];
-              value.style.lineHeight = tailwindConfig().theme.fontSize['3xl'][1].lineHeight;
+              value.style.lineHeight =
+                tailwindConfig().theme.fontSize['3xl'][1].lineHeight;
               value.style.fontWeight = tailwindConfig().theme.fontWeight.bold;
               value.style.marginRight = tailwindConfig().theme.margin[2];
               value.style.pointerEvents = 'none';
               const label = document.createElement('span');
               label.classList.add('text-gray-500', 'dark:text-gray-400');
               label.style.fontSize = tailwindConfig().theme.fontSize.sm[0];
-              label.style.lineHeight = tailwindConfig().theme.fontSize.sm[1].lineHeight;
-              const theValue = c.data.datasets[item.datasetIndex].data.reduce((a, b) => a + b, 0);
+              label.style.lineHeight =
+                tailwindConfig().theme.fontSize.sm[1].lineHeight;
+              const theValue = c.data.datasets[item.datasetIndex].data.reduce(
+                (a, b) => a + b,
+                0,
+              );
               const valueText = document.createTextNode(formatValue(theValue));
               const labelText = document.createTextNode(item.text);
               value.appendChild(valueText);
@@ -164,7 +190,7 @@ function BarChart01({
     });
     setChart(newChart);
     return () => newChart.destroy();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
