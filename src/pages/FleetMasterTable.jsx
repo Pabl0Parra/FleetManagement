@@ -1,5 +1,3 @@
-// src/components/FleetMasterTable.jsx
-
 import React, { useMemo, useState } from 'react';
 import {
   useReactTable,
@@ -10,28 +8,22 @@ import {
   flexRender,
 } from '@tanstack/react-table';
 import { mockData } from '../utils/mockData';
-
-// Define a default UI for global filtering
-const GlobalFilter = ({ globalFilter, setGlobalFilter }) => {
-  return (
-    <div className="flex items-center space-x-2">
-      <span className="text-gray-700 dark:text-gray-300">Search:</span>
-      <input
-        type="text"
-        value={globalFilter || ''}
-        onChange={(e) => setGlobalFilter(e.target.value)}
-        className="p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-        placeholder="Type to search..."
-      />
-    </div>
-  );
-};
+import GlobalFilter from '../components/GlobalFilter';
+import ModalBuoyDetails from '../components/ModalBuoyDetails';
+import useIsMobile from '../hooks/useIsMobile';
 
 const FleetMasterTable = () => {
   // State management for sorting, filtering, and pagination
   const [sorting, setSorting] = useState([]);
   const [globalFilter, setGlobalFilter] = useState('');
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+
+  // State for Modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedRowData, setSelectedRowData] = useState(null);
+
+  // Custom hook to detect mobile devices
+  const isMobile = useIsMobile();
 
   const data = useMemo(() => mockData, []);
 
@@ -110,6 +102,14 @@ const FleetMasterTable = () => {
     globalFilterFn: 'includesString', // You can customize the global filter function
   });
 
+  // Handler for clicking (tapping) a row
+  const handleRowClick = (row) => {
+    if (isMobile) {
+      setSelectedRowData(row.original);
+      setIsModalOpen(true);
+    }
+  };
+
   return (
     <div className="flex flex-col m-4 sm:m-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
       {/* Header Section */}
@@ -174,7 +174,8 @@ const FleetMasterTable = () => {
               table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className="hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  className="hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+                  onClick={() => handleRowClick(row)}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <td
@@ -234,6 +235,112 @@ const FleetMasterTable = () => {
           <strong>{table.getPageCount()}</strong>
         </span>
       </div>
+
+      {/* Modal for Mobile View */}
+      <ModalBuoyDetails
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      >
+        {selectedRowData && (
+          <div>
+            <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">
+              Buoy Details
+            </h2>
+            <div className="space-y-2">
+              <div>
+                <strong className="text-gray-700 dark:text-gray-300">
+                  Buoy Name:
+                </strong>{' '}
+                <span className="text-gray-900 dark:text-gray-100">
+                  {selectedRowData.buoyName}
+                </span>
+              </div>
+              <div>
+                <strong className="text-gray-700 dark:text-gray-300">
+                  Buoy ID:
+                </strong>{' '}
+                <span className="text-gray-900 dark:text-gray-100">
+                  {selectedRowData.buoyID}
+                </span>
+              </div>
+              <div>
+                <strong className="text-gray-700 dark:text-gray-300">
+                  Status:
+                </strong>{' '}
+                <span className="text-gray-900 dark:text-gray-100">
+                  {selectedRowData.buoyStatus}
+                </span>
+              </div>
+              <div>
+                <strong className="text-gray-700 dark:text-gray-300">
+                  Project Name:
+                </strong>{' '}
+                <span className="text-gray-900 dark:text-gray-100">
+                  {selectedRowData.projectName}
+                </span>
+              </div>
+              <div>
+                <strong className="text-gray-700 dark:text-gray-300">
+                  Project Manager:
+                </strong>{' '}
+                <span className="text-gray-900 dark:text-gray-100">
+                  {selectedRowData.projectManager}
+                </span>
+              </div>
+              <div>
+                <strong className="text-gray-700 dark:text-gray-300">
+                  Coordinates:
+                </strong>{' '}
+                <span className="text-gray-900 dark:text-gray-100">
+                  {selectedRowData.projectCoordinates}
+                </span>
+              </div>
+              <div>
+                <strong className="text-gray-700 dark:text-gray-300">
+                  Client Name:
+                </strong>{' '}
+                <span className="text-gray-900 dark:text-gray-100">
+                  {selectedRowData.clientName}
+                </span>
+              </div>
+              <div>
+                <strong className="text-gray-700 dark:text-gray-300">
+                  Datalogger Version:
+                </strong>{' '}
+                <span className="text-gray-900 dark:text-gray-100">
+                  {selectedRowData.dataloggerVersion}
+                </span>
+              </div>
+              <div>
+                <strong className="text-gray-700 dark:text-gray-300">
+                  Deployment Date:
+                </strong>{' '}
+                <span className="text-gray-900 dark:text-gray-100">
+                  {selectedRowData.deploymentDate}
+                </span>
+              </div>
+              <div>
+                <strong className="text-gray-700 dark:text-gray-300">
+                  End Date:
+                </strong>{' '}
+                <span className="text-gray-900 dark:text-gray-100">
+                  {selectedRowData.endDate}
+                </span>
+              </div>
+              <div>
+                <strong className="text-gray-700 dark:text-gray-300">
+                  Client Logo:
+                </strong>{' '}
+                <img
+                  src={selectedRowData.clientLogo}
+                  alt="Client Logo"
+                  className="w-16 h-16 rounded mt-2"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </ModalBuoyDetails>
     </div>
   );
 };
