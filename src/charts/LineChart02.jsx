@@ -52,9 +52,6 @@ function LineChart02({ data, width, height }) {
           y: {
             min: 0,
             max: 6,
-            ticks: {
-              stepSize: 0.5,
-            },
             border: {
               display: false,
             },
