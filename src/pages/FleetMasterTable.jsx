@@ -99,7 +99,7 @@ const FleetMasterTable = () => {
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    globalFilterFn: 'includesString', // You can customize the global filter function
+    globalFilterFn: 'includesString',
   });
 
   // Handler for clicking (tapping) a row
